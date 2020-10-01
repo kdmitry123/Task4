@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.dto.UserCmd;
 import com.example.dto.UserDto;
 import com.example.pojo.AppUser;
 import com.example.repo.UserRepository;
@@ -57,6 +58,16 @@ public class UserService {
         user.setEmail(email);
         user.setLastaccess(LocalDateTime.now());
         user.setPassword(password);
+        user.setIsblock(false);
+        userRepository.save(user);
+    }
+
+    public void add(UserCmd userCmd){
+        AppUser user = new AppUser();
+        user.setName(userCmd.getName());
+        user.setEmail(userCmd.getEmail());
+        user.setLastaccess(LocalDateTime.now());
+        user.setPassword(userCmd.getPassword());
         user.setIsblock(false);
         userRepository.save(user);
     }

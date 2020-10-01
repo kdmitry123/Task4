@@ -3,21 +3,17 @@ package com.example.controller;
 import com.example.dto.UserDto;
 import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("users")
 public class UserController {
 
     @Autowired
     UserService userService;
-
-    @PostMapping("/add")
-    public void addUser(@RequestParam String name, @RequestParam String email, @RequestParam String password){
-        userService.addUser(name, email, password);
-    }
 
     @PutMapping("/block")
     public void blockUsers(@RequestBody List<String> list){
@@ -38,4 +34,6 @@ public class UserController {
     public List<UserDto> getAll(){
         return userService.getAllUsers();
     }
+
+
 }
