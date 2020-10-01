@@ -19,6 +19,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     DataSource dataSource;
 
+
     @Autowired
     @Qualifier("authService")
     UserDetailsService userDetailsService;
@@ -40,8 +41,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll();
     }
 
+
+
+
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder builder) throws Exception {
+
         builder.userDetailsService(userDetailsService).passwordEncoder(NoOpPasswordEncoder.getInstance());
     }
 

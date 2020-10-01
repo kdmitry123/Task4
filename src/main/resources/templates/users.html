@@ -37,10 +37,13 @@
 <!--    </tr>-->
 <!--    </tbody>-->
 <!--</table>-->
+<form action="/logout" method="post">
+    <button type="submit" class="btn btn-primary">Logout</button>
+</form>
+
 
 <script>
-    var jqxhr = $.getJSON( "/users/all");
-
+    let jqxhr = $.getJSON( "/users/all");
 
 </script>
 

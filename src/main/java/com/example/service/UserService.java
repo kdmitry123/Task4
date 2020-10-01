@@ -16,6 +16,7 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
+
     public void deleteUsers(List<String> listId){
         listId.forEach(elem -> {
             AppUser userDb = userRepository.getUserById(Long.parseLong(elem));
