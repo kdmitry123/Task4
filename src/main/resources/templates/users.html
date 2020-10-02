@@ -1,59 +1,131 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="UTF-8">
-    <script
-            src="http://code.jquery.com/jquery-3.5.1.js"
-            integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
-            crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>Task 4</title>
 </head>
-<body>
 
+<body style="width: 90%; padding-left: 5%">
+<h5 class="display-4">Users</h5>
+<div id="app1" >
+    <form>
+        <button type="button" @click="selectAll"><span class="material-icons">check_box</span></button>
+        <button type="button" @click="removeSelection"><span class="material-icons">check_box_outline_blank</span></button>
+        <button type="button" @click="sendPostBlock"><span class="material-icons">lock</span></button>
+        <button type="button" @click="sendPostUnBlock"><span class="material-icons">lock_open</span></button>
+        <button type="button" @click="sendPostDelete"><span class="material-icons">delete</span></button>
+    </form>
+    <form id="form1">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">id</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Register Date</th>
+                <th scope="col">Last Access</th>
+                <th scope="col">Status</th>
+            </tr>
+            </thead>
+            <tbody>
 
-
-<!--<table class="table table-striped">-->
-<!--    <thead>-->
-<!--    <tr>-->
-<!--        <th scope="col">id</th>-->
-<!--        <th scope="col">Имя</th>-->
-<!--        <th scope="col">Email</th>-->
-<!--        <th scope="col">Register Date</th>-->
-<!--        <th scope="col">Last Access</th>-->
-<!--        <th scope="col">Block?</th>-->
-<!--    </tr>-->
-<!--    </thead>-->
-<!--    <tbody>-->
-
-<!--    <tr>-->
-
-<!--        <th scope="row"><input class="form-check-input position-static" name="checkbox" type="checkbox" aria-label="..."></th>-->
-<!--        <td></td>-->
-<!--        <td></td>-->
-<!--        <td></td>-->
-<!--        <td></td>-->
-<!--        <td></td>-->
-<!--    </tr>-->
-<!--    </tbody>-->
-<!--</table>-->
-<form action="/logout" method="post">
+            <tr v-for="user in users" :key="user.id" >
+                <th scope="row">
+                    <input class="form-check-input position-static checkbox" v-model="checkedNames" :id="user.id" type="checkbox" :value="user.id" />
+                    {{ user.id }}
+                </th>
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.registerdate }}</td>
+                <td>{{ user.lastaccess }}</td>
+                <td>
+                    <span v-if="user.isblock">Locked</span>
+                    <span v-else>Unlocked</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+<br>
+<form th:action="@{/logout}" method="post">
     <button type="submit" class="btn btn-primary">Logout</button>
 </form>
-
-
 <script>
-    let jqxhr = $.getJSON( "/users/all");
 
+    new Vue({
+
+        el: '#app1',
+        data: {
+            users: null,
+            checkedNames: [],
+            checked: false,
+            index: [],
+        },
+
+        mounted() {
+            axios
+                .get('/users/all')
+                .then(response => this.users = response.data);
+        },
+
+        methods: {
+
+            selectAll(){
+                this.users.forEach(user => this.index.push(user.id));
+                this.checkedNames = this.index;
+            },
+            removeSelection() {
+                let index = [];
+                this.checkedNames = index;
+            },
+
+            sendPostBlock() {
+                const postData = JSON.stringify(this.checkedNames);
+                const options = {
+                    method: 'POST',
+                    headers: {'content-type': 'application/json'},
+                    data: postData,
+                    url: '/user/block'
+                };
+                axios(options);
+                window.location.reload();
+            },
+
+            sendPostUnBlock() {
+                const postData = JSON.stringify(this.checkedNames);
+                const options = {
+                    method: 'POST',
+                    headers: {'content-type': 'application/json'},
+                    data: postData,
+                    url: '/user/unblock'
+                };
+                axios(options);
+                window.location.reload();
+            },
+            sendPostDelete(){
+                const postData = JSON.stringify(this.checkedNames);
+                const options = {
+                    method: 'POST',
+                    headers: {'content-type': 'application/json'},
+                    data: postData,
+                    url: '/user/delete'
+                };
+                axios(options);
+                window.location.reload();
+            },
+
+        }
+    });
 </script>
-
-
-
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-
-
-
 </body>
 </html>

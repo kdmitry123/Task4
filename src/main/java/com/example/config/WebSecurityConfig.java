@@ -31,14 +31,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/").permitAll()
                 .antMatchers("/register").permitAll()
                 .antMatchers("/add").permitAll()
+                .antMatchers("/user/block").permitAll()
+                .antMatchers("/user/unblock").permitAll()
+                .antMatchers("/user/delete").permitAll()
+                .and()
+                .authorizeRequests()
+                .antMatchers("/all").authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login")
+                .defaultSuccessUrl("/all")
                 .permitAll()
                 .and()
                 .logout()
-                .permitAll();
+                .permitAll()
+                .logoutSuccessUrl("/");
     }
 
 
